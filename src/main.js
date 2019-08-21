@@ -14,11 +14,29 @@ Vue.use(iView)
 
 Vue.http = Vue.prototype.$http = axios
 
+router.beforeEach((to, from, next) => {
+  if (store.state.setting.login.token === '' || typeof (store.state.setting.login.token) === 'undefined') {
+    console.log('to = ', to)
+    console.log('from = ', from)
+    console.log(store.state.setting.login.token)
+    if (to.name !== 'Login')
+      next({
+        name: 'Login'
+      })
+    else
+      next()
+  } else
+    next()
+
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   store,
-  components: { App },
+  components: {
+    App
+  },
   template: '<App/>'
 })
