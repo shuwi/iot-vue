@@ -36,18 +36,18 @@
           </div>
         </div>
       </div>
-      <machine-info-modal @reloadPage="reload"></machine-info-modal>
+      <apply-modal @reloadPage="reload"></apply-modal>
     </template>
   </Index>
 </template>
 <script>
   import Index from "@/components/index/index.vue";
-  import MachineInfoModal from '@/components/machine/info.vue';
+  import ApplyModal from '@/components/apply/info.vue';
   export default {
-    name: "Machine",
+    name: "Apply",
     components: {
       Index,
-      MachineInfoModal
+      ApplyModal
     },
     computed: {
       baseURL: {
@@ -59,6 +59,7 @@
     },
     mounted: function () {
       this.reload(1)
+      //this.$store.dispatch('setOpenNames', ['1'])
     },
     data() {
       return {
@@ -67,6 +68,11 @@
         total: 0,
         tableData: [],
         tableColumns: [{
+            type: 'index',
+            width: 60,
+            align: 'center'
+          },
+          {
             title: "申请人",
             key: "userName"
           },
@@ -100,12 +106,27 @@
             }
           },
           {
-            title: "开始时间",
-            key: "begin"
+            title: "时间段",
+            key: "fromTo"
           },
           {
-            title: "结束时间",
-            key: "end"
+            title: "日期",
+            key: "applyDate",
+            render: (h, params) => {
+              const row = params.row;
+              var moment = require('moment');
+              const text =
+                moment(row.applyDate).format('YYYY-MM-DD');
+
+              return h(
+                "span", {
+                  props: {
+                    
+                  }
+                },
+                text
+              );
+            }
           },
           {
             title: "申请提交时间",
@@ -122,7 +143,7 @@
     },
     methods: {
       add() {
-        this.$store.dispatch('showMachineModal', {})
+        this.$store.dispatch('showApplyModal', {})
       },
       reload(num) {
         var that = this;
@@ -157,7 +178,7 @@
         this.reload(number);
       },
       show(index) {
-        this.$store.dispatch('showMachineModal', this.tableData[index])
+        this.$store.dispatch('showApplyModal', this.tableData[index])
       },
       drop(index) {
         this.$Modal.confirm({
